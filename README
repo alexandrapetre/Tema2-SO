@@ -1,0 +1,55 @@
+Tema 2 - PETRE ALEXANDRA 335CB
+
+--- ORGANIZARE ---
+
+	1. Am implementat funcțiile cerute. Pentru citire și scriere din fișier
+am folosit open, close, read și write. Strucutura SO_FILE are mai multe câmpuri
+în care rețin câți bytes s-au citit, un index care reține poziția unde s-a oprit
+citirea// scrierea. În structura SO_FILE am reținut și pid-ul procesului copil,
+pentru funcția waitpid.
+
+	Pentru funția de so_fgetsc, dacă bufferul era plin (BUFSIZE) sau gol, citeam
+din fișier date și le puneam în buffer. În variabila totalBytesRead rețin cât
+se citește de fiecare dată.
+	Variabila totalBytesRead am folosit-o la so_ftell, pentru a spune poziția
+cursorului (totalBytesRead + index).
+	Funțiile so_fread și so_fwrite se parcurge numărul de bytes care trebuie
+citiți sau scriși cu un for și aplez funcțiile so_fgetsc si so_fputsc.
+	Când se scrie în fișier, în funcția fflush am observat că write(filedes,
+buf, count), nu scrie mereu count bytes, și am folosit un while și înca o
+variabilă ca să rețin
+cât am scirs și poziția de unde trebuie să continui.
+	Pentru procese, am folosit pipe si fork, si ce returnează fork:
+		- dacă returnează -1 --  eroare, deci închideam fdParinte si fdCopil
+		- daca retrunează  0 --  procesul copil, se execută comanda și se închide
+							  pipe-ul cu fd-ul părintelui.
+		- dacă returnează >0 --  procesul părinte, se crează fișierul nou
+
+	Da consider că a fost o temă utilă, pentru că am învățat să creăm o
+librarie dinamică funcțională.
+
+
+--- IMPLEMENTARE ---
+
+	Am implementat tot ceea ce era in enuț.
+	Am avut probleme cu popen si pclose, cicla waitpid-ul, și am avut probleme
+cu fișierul huge random, nu făcusem bine implementarea în while bine, și deși
+citea cât trebuie, datele nu erau cele bune.
+
+--- CUM COMPILEAZĂ ȘI CUM SE RULEAZĂ ---
+
+	În Makefile am 4 reguli:
+		- build - crează biblioteca dinamică
+		- clean	- șterge fișierele .o si biblioteca
+		- so_stdio.o - folosește so_stdio.c
+		- libso_stdio.so - construiește biblioteca dinamică
+	Am folosit modelul de Makefile din labul 1
+
+
+--- Bibliografie ---
+
+https://ocw.cs.pub.ro/courses/so/laboratoare-2013/laborator-01#biblioteci_in_linux
+https://stackoverflow.com/questions/44297208/using-switch-statements-to-fork-two-processes
+https://www.geeksforgeeks.org/c-program-demonstrate-fork-and-pipe/
+https://linux.die.net/man/2/waitpid
+https://medium.com/@Cu7ious/how-to-use-dynamic-libraries-in-c-46a0f9b98270
